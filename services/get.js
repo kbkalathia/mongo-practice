@@ -6,7 +6,7 @@ const InsertData = async (req, res) => {
   try {
     const ress = new InformationModel(req.body);
     await ress.save();
-    return res.status(201).json({ success: true });
+    return res.status(201).json({ success: true, doc: ress._doc });
   } catch (error) {
     console.log("error :>> ", error);
   }
@@ -14,7 +14,9 @@ const InsertData = async (req, res) => {
 
 const GetData = async (req, res) => {
   try {
-    const ress = await InformationModel.findById(req.query.state)
+    const ress = await InformationModel.findOne({
+      _id: new mongoose.Types.ObjectId(`${req.query.state}`),
+    })
       .populate("userId")
       // .populate({ path: "userId", select: ["name"] })
       .exec();
