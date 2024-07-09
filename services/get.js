@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import InformationModel from "../models/information.model.js";
-import UsersModel from "../models/users.model.js";
 
 const InsertData = async (req, res) => {
   try {
@@ -59,5 +58,51 @@ const DeleteData = async (req, res) => {
   }
 };
 
+const GetDataUsingAggregation = async (req, res) => {
+  try {
+    const ress = await InformationModel.aggregate([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(`${req.query.state}`),
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "userDetails",
+          pipeline: [
+            {
+              $project: {
+                _id: 0,
+                name: 1,
+                email: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $unwind: {
+          path: "$userDetails",
+        },
+      },
+      {
+        $limit: 10,
+      },
+      {
+        $sort: {
+          city: -1,
+        },
+      },
+    ]);
+
+    return res.status(200).json(ress);
+  } catch (error) {
+    console.log("error :>> ", error);
+  }
+};
+
 export default GetData;
-export { InsertData, UpdateData, DeleteData };
+export { InsertData, UpdateData, DeleteData, GetDataUsingAggregation };
