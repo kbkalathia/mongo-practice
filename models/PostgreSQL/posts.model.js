@@ -1,21 +1,25 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../../config/connection.js";
+import UserModel from "./users.model.js";
 
-const UserModel = sequelize.define("User", {
+const PostModel = sequelize.define("Post", {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
   },
-  name: DataTypes.STRING,
-  email: {
+  title: DataTypes.STRING,
+  description: {
     type: DataTypes.STRING,
-    unique: true,
+  },
+  userId: {
+    type: DataTypes.UUID,
     allowNull: false,
-    validate: {
-      isEmail: true,
+    references: {
+      key: "id",
+      model: UserModel,
     },
   },
 });
 
-export default UserModel;
+export default PostModel;
