@@ -2,6 +2,7 @@ import { Op } from "sequelize";
 import UserModel from "../../models/PostgreSQL/users.model.js";
 import PostModel from "../../models/PostgreSQL/posts.model.js";
 import * as ResponseHelper from "../../utils/response.helpers.js";
+import ContactsModel from "../../models/PostgreSQL/contacts.model.js";
 
 export const GetUsers = async (req, res) => {
   try {
@@ -90,7 +91,7 @@ export const CountUsers = async (req, res) => {
 
 export const GetAllPostsForUsers = async (req, res) => {
   try {
-    const result = await UserModel.findAll({
+    const result = await UserModel.findOne({
       where: { id: req.params.id },
       include: [
         {
@@ -99,6 +100,31 @@ export const GetAllPostsForUsers = async (req, res) => {
         },
       ],
     });
+    ResponseHelper.Success(res, result);
+  } catch (error) {
+    ResponseHelper.ServerFailure(res);
+  }
+};
+
+export const GetUserContacts = async (req, res) => {
+  try {
+    const result = await UserModel.findOne({
+      where: {
+        id: req.params.id,
+      },
+      attributes: ["id", "name", "email"],
+      include: [
+        {
+          as: "contacts",
+          model: ContactsModel,
+          attributes: ["id", "number"],
+          through: {
+            attributes: [],
+          },
+        },
+      ],
+    });
+
     ResponseHelper.Success(res, result);
   } catch (error) {
     ResponseHelper.ServerFailure(res);
