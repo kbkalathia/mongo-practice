@@ -16,12 +16,12 @@ import { Sequelize } from "sequelize";
 
 const sequelize = new Sequelize("testDB", "postgres", "Sit@321#", {
   dialect: "postgres",
-  host: "localhost",
+  host: "localhost", 
   port: 5432,
 });
 
 async function connection() {
-  try {
+  try {    
     await sequelize.authenticate();
     console.log("Connection has been established successfully.");
     await sequelize.sync({ force: false, logging: false, alter: true });

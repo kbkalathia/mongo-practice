@@ -25,7 +25,6 @@ const UserContactModel = sequelize.define("UserContacts", {
     },
     onDelete: "CASCADE",
   },
-  timestamps: false,
 });
 
 export default UserContactModel;

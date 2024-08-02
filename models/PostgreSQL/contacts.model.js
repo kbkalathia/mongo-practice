@@ -10,6 +10,7 @@ const ContactsModel = sequelize.define("Contacts", {
   number: {
     type: DataTypes.BIGINT,
     allowNull: false,
+    unique: true,
     validate: {
       isNumeric: true,
       len: {

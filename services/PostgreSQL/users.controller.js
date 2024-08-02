@@ -3,6 +3,7 @@ import UserModel from "../../models/PostgreSQL/users.model.js";
 import PostModel from "../../models/PostgreSQL/posts.model.js";
 import * as ResponseHelper from "../../utils/response.helpers.js";
 import ContactsModel from "../../models/PostgreSQL/contacts.model.js";
+import { sequelize } from "../../config/connection.js";
 
 export const GetUsers = async (req, res) => {
   try {
@@ -123,6 +124,18 @@ export const GetUserContacts = async (req, res) => {
           },
         },
       ],
+    });
+
+    ResponseHelper.Success(res, result);
+  } catch (error) {
+    ResponseHelper.ServerFailure(res);
+  }
+};
+
+export const TotalUsers = async (req, res) => {
+  try {
+    const result = await UserModel.findAll({
+      attributes: [[sequelize.fn("COUNT", sequelize.col("id")), "counts"]],
     });
 
     ResponseHelper.Success(res, result);

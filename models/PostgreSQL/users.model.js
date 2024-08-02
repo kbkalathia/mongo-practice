@@ -18,4 +18,9 @@ const UserModel = sequelize.define("User", {
   },
 });
 
+// Hooks
+UserModel.beforeCreate((user, option) => {
+  user.email = user.email.toLowerCase();
+});
+
 export default UserModel;
